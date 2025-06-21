@@ -1,12 +1,32 @@
 # Smart-Home-API
 
+[![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![SQLAlchemy](https://img.shields.io/badge/SQLAlchemy-D71F00?style=for-the-badge&logo=sqlalchemy&logoColor=white)](https://www.sqlalchemy.org/)
+
 
 一个基于 FastAPI + PostgreSQL 构建的智能家居系统后端 API，支持用户管理、设备管理、使用记录、安防事件、用户反馈与数据分析等功能。
 
+## 🌟 核心功能
 
+
+- **用户与设备管理** 
+  -  用户注册、设备添加、绑定用户
+- **使用记录追踪** 
+  - 记录设备的开启时间、关闭时间和能耗
+- **安防事件管理** 
+  - 安全事件记录与警报，包括事件类型、时间和处理状态
+- **用户反馈系统** 
+  - 用户满意度调查与反馈收集
+- **数据分析可视化** 
+  - 不同设备的使用频率和使用时间段分析
+  - 用户使用习惯分析
+  - 房屋面积与设备使用行为相关性分析
+  - 安防事件相关性分析
+  - 用户满意度与使用频率分析
+  - 设备能耗分析
+> 📌 数据分析接口支持通过 user_id 参数进行个性化用户分析，未提供时则进行全局分析。
 
 ## 📁 项目结构
 
@@ -120,7 +140,8 @@ python generator.py
 | 分析功能 | 接口路径 | 图表类型 | 说明 |
 |---------|----------|----------|------|
 | 设备使用频率 | `/api/v1/analytics/device-usage-frequency` | 柱状图 | 统计各设备的使用频次 |
-| 使用时间模式 | `/api/v1/analytics/usage-patterns` | 折线图 | 分析设备使用的时间分布 |
+| 使用时间模式 | `/api/v1/analytics/device_usage_time_slot` | 折线图 | 分析设备使用的时间分布 |
+| 用户使用习惯 | `/api/v1/analytics/usage-patterns` | 热力图 | 分析设备协同使用模式 |
 | 房屋面积影响 | `/api/v1/analytics/area-impact` | 散点图 | 房屋面积与设备使用的关系 |
 | 安防事件关联 | `/api/v1/analytics/security-device-correlation` | 热力图 | 安防事件与设备的关联度 |
 | 满意度分析 | `/api/v1/analytics/satisfaction-analysis` | 散点图 | 用户满意度与使用频率关系 |
@@ -140,20 +161,16 @@ curl -X GET "http://localhost:8000/api/v1/analytics/usage-patterns"
 curl -X GET "http://localhost:8000/api/v1/analytics/satisfaction-analysis?user_id=1"
 ```
 
+### 返回格式
+所有分析接口返回Base64编码的图像数据：
 
+```
+{
+  "chart": "iVBORw0KGgoAAAANSUhEUgAAA+gAAAJYCAYAAADxHswlAAAAOXRFWHRTb2Z0d2FyZQBNYXRwbG90bGliIHZlcnNpb24zLjcuMiwgaHR0cHM6Ly9t="
+}
+```
 
-## 技术栈
+由于本项目只提供后端建立，为测试图像可视化效果，可选择复制 Base64 编码到 Base64 图片转换网站进行测试。
 
-- FastAPI
+网站示例：[BASE64转图片](https://tool.jisuapi.com/base642pic.html)
 
-- PostgreSQL
-
-- SQLAlchemy
-
-- Alembic
-
-- Matplotlib / Seaborn
-
-- Pydantic
-
-- Uvicorn

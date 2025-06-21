@@ -85,6 +85,42 @@ def device_usage_time_slot(db: Session, user_id: Optional[str] = None) -> str:
     # 转换为Base64并返回
     return fig_to_base64(plt)
 
+# ------------------------------
+# 用户使用习惯挖掘（设备组合使用模式）
+# ------------------------------
+def device_usage_patterns(user_id: Optional[int], db: Session) -> str:
+    """分析用户使用习惯，找出哪些设备经常同时使用"""
+    # 获取设备使用记录
+    query = db.query(
+        models.DeviceUsage.device_id,
+        models.Device.name,
+        func.date_trunc('hour', models.DeviceUsage.start_time).label("time_slot")
+    ).join(models.Device, models.Device.id == models.DeviceUsage.device_id)
+
+    if user_id is not None:
+        query = query.join(models.User, models.User.id == models.Device.user_id).filter(models.User.id == user_id)
+
+    usage_data = query.all()
+
+    df = pd.DataFrame(usage_data, columns=["device_id", "device_name", "time_slot"])
+
+    if df.empty:
+        raise ValueError("无足够的使用记录进行模式分析")
+
+    # 生成共现矩阵
+    pivot_df = df.pivot_table(index="time_slot", columns="device_name", aggfunc="size", fill_value=0)
+    correlation_matrix = pivot_df.T.dot(pivot_df)
+    
+    # 归一化（可选，使热力图更明显）
+    normalized = correlation_matrix.div(correlation_matrix.sum(axis=1), axis=0)
+
+    # 可视化
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(normalized, annot=True, cmap="Blues", fmt=".2f", cbar_kws={"label": "Co-Usage Frequency"})
+    plt.title("Device Co-Usage Pattern")
+
+    return fig_to_base64(plt)
+
 
 # ------------------------------
 # 房屋面积对设备使用行为的影响

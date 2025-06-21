@@ -19,7 +19,7 @@ def device_usage_frequency(user_id: Optional[int] = Query(None), db: Session = D
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@router.get("/usage-patterns")
+@router.get("/device_usage_time_slot")
 def device_usage_time_slot(user_id: Optional[int] = Query(None), db: Session = Depends(get_db)):
     """设备使用时间段分析"""
     try:
@@ -28,6 +28,14 @@ def device_usage_time_slot(user_id: Optional[int] = Query(None), db: Session = D
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@router.get("/usage-patterns")
+def device_usage_patterns(user_id: Optional[int] = Query(None), db: Session = Depends(get_db)):
+    """用户使用习惯分析（设备共现使用热力图）"""
+    try:
+        chart = analytics.device_usage_patterns(user_id=user_id, db=db)
+        return {"chart": chart}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @router.get("/area-impact")
 def house_area_device_usage(user_id: Optional[int] = Query(None), db: Session = Depends(get_db)):
