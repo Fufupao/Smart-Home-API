@@ -101,13 +101,13 @@ alembic revision --autogenerate -m "描述你的更改"
 alembic upgrade head
 ```
 
-### 6. 启动 API 服务
+### 4. 启动 API 服务
 
 ```
 uvicorn main:app --reload
 ```
 
-### 7. 访问API文档
+### 5. 访问API文档
 
 服务启动后，访问以下地址查看API文档：
 
@@ -173,4 +173,3 @@ curl -X GET "http://localhost:8000/api/v1/analytics/satisfaction-analysis?user_i
 由于本项目只提供后端建立，为测试图像可视化效果，可选择复制 Base64 编码到 Base64 图片转换网站进行测试。
 
 网站示例：[BASE64转图片](https://tool.jisuapi.com/base642pic.html)
-
